@@ -152,9 +152,6 @@ public class PlanCost {
         int rightpages = (int) Math.ceil(1.0 * righttuples / rightcapacity);
 
         double tuples = (double) lefttuples * righttuples;
-        for(Condition con: node.getConditionList()) {
-            con.print();
-        }
         for (Condition con : node.getConditionList()) {
             Attribute leftjoinAttr = con.getLhs();
             Attribute rightjoinAttr = (Attribute) con.getRhs();
@@ -164,8 +161,9 @@ public class PlanCost {
             rightjoinAttr = rightschema.getAttribute(rightattrind);
 
             /** Number of distinct values of left and right join attribute **/
-            System.out.println("lja: " + leftjoinAttr);
-            System.out.println("lad:" + ht.get(leftjoinAttr));
+            for(Attribute attr: ht.keySet()) {
+                System.out.println("key: " + attr + " value: " + ht.get(attr));
+            }
             int leftattrdistn = ht.get(leftjoinAttr);
             int rightattrdistn = ht.get(rightjoinAttr);
             tuples /= (double) Math.max(leftattrdistn, rightattrdistn);
@@ -251,6 +249,7 @@ public class PlanCost {
             int oldvalue = ht.get(attri);
             int newvalue = (int) Math.ceil(1.0 * outtuples / intuples * oldvalue);
             ht.put(attri, outtuples);
+            System.out.println("new key: " + attri + " value: " + outtuples);
         }
         return outtuples;
     }
@@ -265,7 +264,6 @@ public class PlanCost {
      **/
     protected int getStatistics(Scan node) {
         String tablename = node.getTabName();
-        //System.out.println("tabname: " + tablename);
         String filename = tablename + ".stat";
         Schema schema = node.getSchema();
         int numAttr = schema.getNumCols();
@@ -308,7 +306,6 @@ public class PlanCost {
             Attribute attr = schema.getAttribute(i);
             temp = tokenizer.nextToken();
             int distinctValues = Integer.valueOf(temp);
-            System.out.println("attr: " + attr + " dv: " + distinctValues);
             ht.put(attr, distinctValues);
         }
 

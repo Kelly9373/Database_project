@@ -69,7 +69,6 @@ public class IterativeImprovement extends RandomOptimizer {
                 optimizationNum++;
             }
         }
-        System.out.println("HERE4");
 
         printPlanCost("Final Plan from Iterative Improvement", finalPlan, finalCost);
         return finalPlan;
