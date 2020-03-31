@@ -139,9 +139,10 @@ public class QueryMain {
     private static void printFinalPlan(Operator root, String[] args, BufferedReader in) {
         System.out.println("----------------------Execution Plan----------------");
         Debug.PPrint(root);
-        PlanCost pc = new PlanCost();
-        System.out.printf("\nExpected cost: %d\n", pc.getCost(root));
-        if (args.length < 5) {
+        System.out.println();
+        //PlanCost pc = new PlanCost();
+        //System.out.prpintf("\nExpected cost: %d\n", pc.getCost(root));
+        //if (args.length < 5) {
             /** Ask user whether to continue execution of the program **/
             System.out.println("enter 1 to continue, 0 to abort ");
             try {
@@ -153,7 +154,7 @@ public class QueryMain {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        //}
     }
 
     /**
