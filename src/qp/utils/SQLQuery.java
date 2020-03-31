@@ -104,6 +104,10 @@ public class SQLQuery {
         return groupbyList;
     }
 
+    public boolean isGroupby(){
+        return !groupbyList.isEmpty() && groupbyList != null;
+    }
+
     public void setOrderByList(ArrayList<Attribute> list) { orderbyList = list; }
 
     public ArrayList<Attribute> getOrderByList() { return orderbyList; }
