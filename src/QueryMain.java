@@ -30,7 +30,7 @@ public class QueryMain {
         Batch.setPageSize(getPageSize(args, in));
 
         SQLQuery sqlquery = getSQLQuery(args[0]);
-        configureBufferManager(sqlquery.getNumJoin(), args, in);
+        configureBufferManager(sqlquery, args, in);
 
         Operator root = getQueryPlan(sqlquery);
         printFinalPlan(root, args, in);
@@ -88,8 +88,9 @@ public class QueryMain {
      * If there are joins then assigns buffers to each join operator while preparing the plan.
      * As buffer manager is not implemented, just input the number of buffers available.
      **/
-    private static void configureBufferManager(int numJoin, String[] args, BufferedReader in) {
-        if (numJoin != 0) {
+    private static void configureBufferManager(SQLQuery sqlQuery, String[] args, BufferedReader in) {
+        int numJoin = sqlQuery.getNumJoin();
+        if (numJoin != 0 || sqlQuery.isDistinct() || sqlQuery.isGroupby()) {
             int numBuff = 1000;
             if (args.length < 4) {
                 System.out.println("enter the number of buffers available");
