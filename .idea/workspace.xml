@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$/../cs2103t/AB2" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/LB" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/LB final" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/LoanBook main" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/LoanBook v1.3" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/LoanBook v1.4" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/LoanBook ver 1.3" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/LoanBook ver fin" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/Loanbook_bug_fix" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/addressbook-level2" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/addressbook-level3" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/addressbook-level4" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/loanbook 1.3" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/main" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/main v1.3" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/origin-AB4" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/original" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../cs2103t/trivial" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../newone" value="PREVIEW" />
+        <entry key="$USER_HOME$/IdeaProjects/AddressBook" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="803" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Java" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>9</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>9 (2)</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
