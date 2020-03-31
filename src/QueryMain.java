@@ -7,6 +7,7 @@ import qp.operators.Operator;
 import qp.optimizer.BufferManager;
 import qp.optimizer.IterativeImprovement;
 import qp.optimizer.PlanCost;
+import qp.optimizer.RandomInitialPlan;
 import qp.optimizer.RandomOptimizer;
 import qp.optimizer.SimulatedAnnealing;
 import qp.parser.Scaner;
@@ -117,11 +118,18 @@ public class QueryMain {
     public static Operator getQueryPlan(SQLQuery sqlquery) {
         Operator root = null;
 
+        RandomInitialPlan rip = new RandomInitialPlan(sqlquery);
+        Operator planroot = rip.prepareInitialPlan();
+        PlanCost pc = new PlanCost();
+        int initCost = pc.getCost(planroot);
+        Debug.PPrint(planroot);
+        System.out.print("   "+initCost);
+        System.out.println();
+        /*
         RandomOptimizer iiOptimizer = new IterativeImprovement(sqlquery);
-        System.out.println("HERE!!!!");
         Operator planroot = iiOptimizer.getOptimizedPlan();
         RandomOptimizer saOptimizer = new SimulatedAnnealing(sqlquery, planroot);
-        planroot = saOptimizer.getOptimizedPlan();
+        planroot = saOptimizer.getOptimizedPlan();*/
 
         if (planroot == null) {
             System.out.println("DPOptimizer: query plan is null");
