@@ -36,7 +36,7 @@ action code {:
 terminal TokenValue ID;
 terminal COMMA,LEFTBRACKET,RIGHTBRACKET,DOT,STAR;
 terminal LESSTHAN,GREATERTHAN,LTOE,GTOE,EQUAL,NOTEQUAL;
-terminal SELECT,FROM,WHERE,GROUPBY,ORDERBY,MAX,MIN,SUM,COUNT,AVG,DISTINCT;
+terminal SELECT,FROM,WHERE,GROUPBY,ORDERBY,MAX,MIN,SUM,COUNT,AVG,DISTINCT,LIMIT,OFFSET;
 terminal TokenValue STRINGLIT;
 
 /* Non terminals */
@@ -71,6 +71,47 @@ finalquery ::= sqlquery:s
         {:
             s.setGroupByList(a);
             s.setOrderByList(b);
+            parser.query = s;
+            RESULT = s;
+        :}
+		| sqlquery:s LIMIT STRINGLIT:a
+        {:
+            s.setLimit(a);
+			parser.query = s;
+            RESULT = s;
+        :}
+		| sqlquery:s OFFSET STRINGLIT:a
+        {:
+            s.setOffset(a);
+			parser.query = s;
+            RESULT = s;
+        :}
+		| sqlquery:s LIMIT STRINGLIT:a OFFSET STRINGLIT:b
+        {:
+            s.setLimit(a);
+            s.setOffset(b);
+			parser.query = s;
+            RESULT = s;
+        :}
+        |  sqlquery:s ORDERBY attlist:a LIMIT STRINGLIT:b
+        {:
+            s.setOrderByList(a);
+            s.setLimit(b);
+            parser.query = s;
+            RESULT = s;
+        :}
+        |  sqlquery:s ORDERBY attlist:a OFFSET STRINGLIT:b
+        {:
+            s.setOrderByList(a);
+            s.setOffset(b);
+            parser.query = s;
+            RESULT = s;
+        :}
+        |  sqlquery:s ORDERBY attlist:a LIMIT STRINGLIT:b OFFSET STRINGLIT:c
+        {:
+            s.setOrderByList(a);
+            s.setLimit(b);
+            s.setOffset(c);
             parser.query = s;
             RESULT = s;
         :}
