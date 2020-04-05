@@ -194,11 +194,13 @@ public class QueryMain {
         Batch resultbatch;
         while ((resultbatch = root.next()) != null) {
             for (int i = 0; i < resultbatch.size(); ++i) {
+                /** Skips the first #offset rows of tuple **/
                 if (offset > 0) {
                     offset--;
                     continue;
                 }
                 printTuple(resultbatch.get(i));
+                /** Stops printing if limit reaches 0 **/
                 if (withLimit && limit > 0) {
                     limit--;
                     if (limit == 0) {

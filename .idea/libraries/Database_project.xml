@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="database_proj">
+  <library name="Database_project">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/java-cup-10k.jar!/" />
       <root url="jar://$PROJECT_DIR$/jlex.jar!/" />
