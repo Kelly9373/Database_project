@@ -61,6 +61,7 @@ public class RandomInitialPlan {
 
     /**
      * prepare initial plan for the query
+     *
      * @return the root of the query plan tree
      **/
     public Operator prepareInitialPlan() {

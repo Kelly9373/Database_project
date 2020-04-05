@@ -40,7 +40,7 @@ public class SimulatedAnnealing extends RandomOptimizer {
 
         /** NUMITER is number of times random restart **/
         int NUMITER;
-        if (numJoin !=0) {
+        if (numJoin != 0) {
             NUMITER = 2 * numJoin;
         } else {
             // Exit if there is no join in the query
@@ -95,9 +95,9 @@ public class SimulatedAnnealing extends RandomOptimizer {
     /**
      * Whether accept this uphill move
      *
-     * @param temperature current annealing temperature
+     * @param temperature  current annealing temperature
      * @param neighborCost current cost
-     * @param initCost initial cost
+     * @param initCost     initial cost
      * @return return true if this move is accepted
      */
     private boolean ifAccept(double temperature, int neighborCost, int initCost) {

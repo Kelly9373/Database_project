@@ -114,6 +114,7 @@ public class PlanCost {
 
     /**
      * Calculates the statistics and cost of join operation
+     *
      * @param node is the plan for Join Operator.
      * @return the cost of the plan.
      **/
@@ -129,7 +130,7 @@ public class PlanCost {
         Schema rightschema = node.getRight().getSchema();
 
         /** Get size of the tuple in output & correspondigly calculate
-        / ** buffer capacity, i.e., number of tuples per page **/
+         / ** buffer capacity, i.e., number of tuples per page **/
         int tuplesize = node.getSchema().getTupleSize();
         int outcapacity = Math.max(1, Batch.getPageSize() / tuplesize);
         int leftuplesize = leftschema.getTupleSize();
@@ -195,6 +196,7 @@ public class PlanCost {
      * Find number of incoming tuples, Using the selectivity find # of output tuples
      * * And statistics about the attributes
      * * Selection is performed on the fly, so no cost involved
+     *
      * @param node the plan for Select Operator.
      * @return the cost of the plan.
      **/
@@ -242,6 +244,7 @@ public class PlanCost {
      * * about that table;
      * * This table contains number of tuples in the table
      * * number of distinct values of each attribute
+     *
      * @param node the plan for Scan Operator.
      * @return the cost of the plan.
      **/
@@ -310,6 +313,7 @@ public class PlanCost {
 
     /**
      * Calculate the number of distinct tuples
+     *
      * @param base
      * @return the number of distinct tuples
      */

@@ -13,8 +13,9 @@ public class BufferManager {
 
     /**
      * BufferManager Constructor
+     *
      * @param numBuffer total number of buffers
-     * @param numJoin total number of Join operators
+     * @param numJoin   total number of Join operators
      */
     public BufferManager(int numBuffer, int numJoin) {
         this.numBuffer = numBuffer;
@@ -28,6 +29,7 @@ public class BufferManager {
 
     /**
      * getter method
+     *
      * @return number of buffers per Join operator
      */
     public static int getBuffersPerJoin() {

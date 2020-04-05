@@ -13,18 +13,17 @@ public class ExternalSort extends Operator {
     private final int numBuff;
     private final Operator base;
     private final int batchSize; // the number of tuple each page
-    private final String sortID = UUID.randomUUID().toString();
+    private final String sortID = UUID.randomUUID().toString();//differentiate multiple instances
     private final ArrayList<Integer> attrsIndex = new ArrayList<>(); // the attributes used for sorting
     private ObjectInputStream sortResult; // the input stream of sorting result
     private boolean eosResult = false; // Whether end of stream of sortResult is reached
 
     public ExternalSort(Operator base, ArrayList attrs, int numBuff) {
         super(OpType.SORT);
-        this.base = base;
         this.numBuff = numBuff;
+        this.base = base;
         this.schema = base.schema;
         this.batchSize = Batch.getPageSize() / schema.getTupleSize();
-
         for (int i = 0; i < attrs.size(); i++) {
             Attribute attribute = (Attribute) attrs.get(i);
             attrsIndex.add(schema.indexOf(attribute));
@@ -38,7 +37,7 @@ public class ExternalSort extends Operator {
         }
         int numOfSortedRuns = createSortedRuns(); // first phase: create sorted runs
         int resultNum =
-                mergeSortedRuns(numOfSortedRuns, 1); // second phase: merge multiple sorted runs into one
+                mergeSortedRuns(1, numOfSortedRuns); // second phase: merge multiple sorted runs into one
         if (resultNum == 1) {
             return true;
         } else return false;
@@ -81,7 +80,7 @@ public class ExternalSort extends Operator {
     /**
      * Merges sorted runs created.
      */
-    private int mergeSortedRuns(int numOfRuns, int passNum) {
+    private int mergeSortedRuns(int passNum, int numOfRuns) {
         if (numOfRuns <= 1) { // only one run left, merge complete already
             try {
                 sortResult =
@@ -94,36 +93,36 @@ public class ExternalSort extends Operator {
         }
 
         int outputCounter = 0;
+        //numBuff - 1 for input, 1 for output
         for (int start = 0; start < numOfRuns; start += numBuff - 1) {
             int end = Math.min(start + numBuff - 1, numOfRuns);
             try {
-                mergeSubgroups(start, end, passNum, outputCounter);
-            } catch (IOException e) {
-                System.out.printf("sort: cannot mergeRuns");
-                System.exit(1);
+                mergeSubgroups(start, end, outputCounter, passNum);
             } catch (ClassNotFoundException e) {
                 System.out.printf("sort: class not found");
+                System.exit(1);
+            } catch (IOException e) {
+                System.out.printf("sort: cannot merge runs");
                 System.exit(1);
             }
             outputCounter += 1;
         }
-        return mergeSortedRuns(outputCounter, passNum + 1);
+        return mergeSortedRuns(passNum + 1, outputCounter);
     }
 
     /**
      * Merge all the sorted runs from start to end
      */
-    private void mergeSubgroups(int start, int end, int passNum, int outNum)
-            throws IOException, ClassNotFoundException {
+    private void mergeSubgroups(int start, int end, int outNum, int passNum)
+            throws ClassNotFoundException, IOException {
         Batch[] inputBatches = new Batch[end - start];
-        boolean[] inputeos = new boolean[end - start];
         ObjectInputStream[] inStreams =
                 new ObjectInputStream[end - start]; // input streams for each input sorted runs
+        boolean[] inputeos = new boolean[end - start];
         for (int i = start; i < end; i++) {
             ObjectInputStream inStream =
                     new ObjectInputStream(new FileInputStream(generateFileName(passNum - 1, i)));
             inStreams[i - start] = inStream;
-
             Batch inputBatch = new Batch(batchSize);
             while (!inputBatch.isFull()) {
                 try {
@@ -155,7 +154,6 @@ public class ExternalSort extends Operator {
             outStream.writeObject(outTuple.tuple);
             int nextTupleNum = outTuple.tupleNum + 1;
             int nextBatchNum = outTuple.sortedRunNum;
-
             if (nextTupleNum == batchSize) {//need to read next page from input buffer
                 Batch inputBatch = new Batch(batchSize);
                 while (!inputBatch.isFull()) {
@@ -169,16 +167,14 @@ public class ExternalSort extends Operator {
                 inputBatches[nextBatchNum] = inputBatch;
                 nextTupleNum = 0;
             }
-
             Batch inputBatch = inputBatches[nextBatchNum];
-            if (inputBatch == null || inputBatch.size() <= nextTupleNum) {
+            if (inputBatch == null || nextTupleNum >= inputBatch.size()) {
                 inputeos[nextBatchNum] = true;
                 continue;
             }
             Tuple nextTuple = inputBatch.get(nextTupleNum);
             resultPriorityQueue.add(new TupleForSort(nextTuple, nextBatchNum, nextTupleNum));
         }
-
         for (ObjectInputStream inStream : inStreams) {
             inStream.close();
         }
@@ -200,14 +196,14 @@ public class ExternalSort extends Operator {
             try {
                 Tuple data = (Tuple) sortResult.readObject();
                 outputBatch.add(data);
-            } catch (ClassNotFoundException cnf) {
-                System.out.printf("sort: class not found");
-                System.exit(1);
             } catch (EOFException EOF) {
                 eosResult = true;
                 return outputBatch;
             } catch (IOException e) {
                 System.out.printf("sort: error reading from sortResult");
+                System.exit(1);
+            } catch (ClassNotFoundException cnf) {
+                System.out.printf("sort: class not found");
                 System.exit(1);
             }
         }
@@ -227,7 +223,8 @@ public class ExternalSort extends Operator {
     }
 
     private String generateFileName(int passNumber, int runNumber) {
-        return "sort-" + sortID + "-" + passNumber + "-" + runNumber;
+        String fileName = "disk-file-sorted-runs" + sortID + "-" + passNumber + "-" + runNumber;
+        return fileName;
     }
 
     // compare two tuples in terms of attrIndex

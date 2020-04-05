@@ -29,8 +29,8 @@ public class SortMergeJoin extends Join {
     public SortMergeJoin(Join jn) {
         super(jn.getLeft(), jn.getRight(), jn.getConditionList(), jn.getOpType());
         schema = jn.getSchema();
-        jointype = jn.getJoinType();
         numBuff = jn.getNumBuff();
+        jointype = jn.getJoinType();
     }
 
     @Override
@@ -94,7 +94,7 @@ public class SortMergeJoin extends Join {
                 outputbatch.add(lefttuple.joinWith(righttuple));
 
                 if (currrightindex < rightpartition.size() - 1) { // scan next right tuple
-                    currrightindex++;
+                    currrightindex += 1;
                     righttuple = rightpartition.get(currrightindex);
                 } else { // scan next left tuple
                     Tuple nextlefttuple = getNextLeftTuple();
@@ -162,16 +162,15 @@ public class SortMergeJoin extends Join {
                 return rightpartition;
             }
         }
-
         while (result == 0) {
             rightpartition.add(nextrighttuple);
             nextrighttuple = getNextRightTuple();
             if (nextrighttuple == null) {
                 break;
             }
-            result = compareTuples(rightpartition.get(0), nextrighttuple, rightindex, rightindex);
+            Tuple firstElement = rightpartition.get(0);
+            result = compareTuples(firstElement, nextrighttuple, rightindex, rightindex);
         }
-
         return rightpartition;
     }
 
