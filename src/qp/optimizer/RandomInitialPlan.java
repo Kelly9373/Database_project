@@ -211,7 +211,12 @@ public class RandomInitialPlan {
         if (!sqlquery.isDistinct()) {
             return;
         }
-        Distinct operator = new Distinct(root, sqlquery.getProjectList());
+        Distinct operator;
+        if(sqlquery.getProjectList().isEmpty()){
+            operator = new Distinct(root, root.getSchema().getAttList());
+        }else{
+            operator = new Distinct(root, sqlquery.getProjectList());
+        }
         operator.setSchema(root.getSchema());
         root = operator;
     }
