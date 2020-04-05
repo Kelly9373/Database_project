@@ -21,7 +21,7 @@ public class GroupBy extends Operator {
     private Tuple prevTuple = null;
 
     public GroupBy(Operator base, ArrayList attrs) {
-        super(OpType.DISTINCT);
+        super(OpType.GROUPBY);
         this.base = base;
         this.attrs = attrs;
     }
@@ -101,9 +101,9 @@ public class GroupBy extends Operator {
             Attribute attribute = (Attribute) ((Attribute) attrs.get(i)).clone();
             newAttrs.add(attribute);
         }
-        Distinct newDistinct = new Distinct(newBase, newAttrs);
-        newDistinct.setSchema(newBase.getSchema());
-        return newDistinct;
+        GroupBy newGroupBy = new GroupBy(newBase, newAttrs);
+        newGroupBy.setSchema(newBase.getSchema());
+        return newGroupBy;
     }
 }
 
