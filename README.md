@@ -69,3 +69,33 @@ After all the testing data ready, we execute query by the following commands:
  ``
  
  The query result will be inside the `<resultfile>`
+
+### 4. Query Format
+
+SELECT [DISTINCT] (attribute list) or *  
+FROM (table list)  
+[WHERE (condition list)]  
+[GROUPBY (condition list)]  
+[LIMIT (limit)]  
+[OFFSET (offset)]  
+ 
+(attribute list): (attribute>  {(,attribute)}  
+(table list)    : (table name> {(,table list)}  
+(condition list): (condition>  {(,condition)}  
+
+(limit)         : string  
+(offset)        : string  
+(attribute)     : (table name).(attribute name)  
+(condition)     : (attribute)(operation)(attribute) or (attribute)(operation)(string)  
+(operation)     : = or ! or < or <= or > or >=
+
+Sample query
+
+``
+SELECT *  
+FROM SCHEDULE,AIRCRAFTS    
+WHERE SCHEDULE.aid = AIRCRAFTS.aid    
+GROUPBY SCHEDULE.aid    
+LIMIT "3"    
+OFFSET "5"   
+``
