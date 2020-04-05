@@ -35,8 +35,11 @@ java RandomDB <tablename> <# of records>
 ``
 java ConvertTxtToTbl <table name>
 ``
+
 After all the testing data ready, we execute query by the following commands:
 
  ``
  java QueryMain <queryfilename> <resultfile> <pagesize> <numbuffer>
  ``
+ 
+ The query result will be inside the `<resultfile>`
