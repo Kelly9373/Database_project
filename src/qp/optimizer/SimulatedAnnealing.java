@@ -6,10 +6,8 @@ import qp.utils.SQLQuery;
 
 public class SimulatedAnnealing extends RandomOptimizer {
     private static final double END_TEMPERATURE = 1;
-    private static final double ALPHA = 0.85;
-
-    private Operator initPlan;
-    private final double initTempParam;
+    private static final double ALPHA = 0.8;
+    private final double INIT_TEMP_PARAM = 2;
 
     /**
      * Constructor
@@ -18,23 +16,10 @@ public class SimulatedAnnealing extends RandomOptimizer {
      */
     public SimulatedAnnealing(SQLQuery sqlQuery) {
         super(sqlQuery);
-        initTempParam = 2;
     }
 
     /**
-     * Constructor
-     *
-     * @param sqlQuery the SQL query
-     * @param initialPlan the initial plan
-     */
-    public SimulatedAnnealing(SQLQuery sqlQuery, Operator initialPlan) {
-        super(sqlQuery);
-        this.initPlan = initialPlan;
-        initTempParam = 0.4;
-    }
-
-    /**
-     * Implements the simulated annealing algorithm
+     * Implement the simulated annealing algorithm
      *
      * @return the optimized plan
      */
@@ -43,53 +28,58 @@ public class SimulatedAnnealing extends RandomOptimizer {
         RandomInitialPlan rip = new RandomInitialPlan(sqlquery);
         numJoin = rip.getNumJoins();
 
-        if (initPlan == null) {
-            initPlan = rip.prepareInitialPlan();
-        }
-
+        Operator initPlan = rip.prepareInitialPlan();
         Operator minPlan = initPlan;
-        RandomOptimizer.modifySchema(minPlan);
+
+        int initCost;
         int minCost = printPlanCost("Initial Plan", minPlan);
 
-        if (numJoin == 0) {
+        /** NUMITER is number of times random restart **/
+        int NUMITER;
+        if (numJoin !=0) {
+            NUMITER = 2 * numJoin;
+        } else {
             printPlanCost("Final Plan", minPlan);
             return minPlan;
         }
 
-        boolean isFirstRound = true;
-        for (double temperature = minCost * initTempParam; temperature > END_TEMPERATURE; temperature *= ALPHA) {
-            Operator initPlan = minPlan;
-            int initCost = minCost;
-
-            if (!isFirstRound) {
-                System.out.println("\n=============================================================================");
+        /**
+         * Randomly restart the gradient descent until
+         * the maximum specified number of random restarts (NUMITER)
+         * has satisfied
+         */
+        for (int j = 0; j < NUMITER; ++j) {
+            if (j != 0) {
                 initPlan = rip.prepareInitialPlan();
                 RandomOptimizer.modifySchema(initPlan);
-                initCost = printPlanCost("Initial Plan", initPlan);
-            }
-            isFirstRound = false;
-
-            for (int i = 0; i < 12 * numJoin; i++) {
-                Operator initPlanCopy = (Operator) initPlan.clone();
-                Operator currentPlan = getNeighbor(initPlanCopy);
-                int currentCost = printPlanCost("Neighbor", currentPlan);
-
-                if (currentCost <= initCost || ifAccept(temperature, currentCost, initCost)) {
-                    System.out.printf("Switched to another plan, initCost changes from %d to %d\n", initCost, currentCost);
-                    initPlan = currentPlan;
-                    initCost = currentCost;
-                }
-            }
-
-            printPlanCost("Local Minimum", initPlan, initCost);
-            if (initCost < minCost) {
-                System.out.printf("Applied minimum from the current round, minCost changes from %d to %d\n", minCost, initCost);
                 minPlan = initPlan;
-                minCost = initCost;
+                minCost = printPlanCost("Initial Plan", minPlan);
+            }
+
+            for (double temperature = minCost * INIT_TEMP_PARAM; temperature > END_TEMPERATURE; temperature *= ALPHA) {
+                initPlan = minPlan;
+                initCost = minCost;
+
+                for (int i = 0; i < 12 * numJoin; i++) {
+                    Operator initPlanCopy = (Operator) initPlan.clone();
+                    Operator currentPlan = getNeighbor(initPlanCopy);
+                    int currentCost = printPlanCost("Neighbor", currentPlan);
+
+                    if (currentCost <= initCost || ifAccept(temperature, currentCost, initCost)) {
+                        initPlan = currentPlan;
+                        initCost = currentCost;
+                    }
+                }
+
+                printPlanCost("Local Minimum", initPlan, initCost);
+                if (initCost < minCost) {
+                    minPlan = initPlan;
+                    minCost = initCost;
+                }
             }
         }
 
-        printPlanCost("Final Plan from SA", minPlan, minCost);
+        printPlanCost("Final Plan", minPlan, minCost);
         return minPlan;
     }
 
