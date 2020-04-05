@@ -5,6 +5,7 @@
 package qp.utils;
 
 import java.util.ArrayList;
+import qp.parser.TokenValue;
 
 public class SQLQuery {
 
@@ -20,6 +21,8 @@ public class SQLQuery {
     ArrayList<Condition> joinList;       // List of join predicates
     ArrayList<Attribute> groupbyList;    // List of attibutes in groupby clause
     ArrayList<Attribute> orderbyList;    // List of attibutes in orderby clause
+    int limit;                           // Number of rows to display
+    int offset;                          // Number of rows to skip
 
     boolean isDistinct = false;          // Whether distinct key word appeared in select clause
 
@@ -30,6 +33,8 @@ public class SQLQuery {
         groupbyList = new ArrayList<>();
         orderbyList = new ArrayList<>();
         joinList = new ArrayList<>();
+        limit = -1;
+        offset = 0;
         splitConditionList(conditionList);
     }
 
@@ -43,6 +48,30 @@ public class SQLQuery {
         groupbyList = new ArrayList<>();
         orderbyList = new ArrayList<>();
         selectionList = new ArrayList<>();
+        limit = -1;
+        offset = 0;
+    }
+
+    public int getLimit() { return limit; }
+
+    public void setLimit(TokenValue limitToken) {
+        try {
+            limit = limitToken.toInteger();
+        } catch (NumberFormatException nfe) {
+            System.err.println("Limit: not an integer");
+            System.exit(1);
+        }
+    }
+
+    public int getOffset() { return offset; }
+
+    public void setOffset(TokenValue offsetoken) {
+        try {
+            offset = offsetoken.toInteger();
+        } catch (NumberFormatException nfe) {
+            System.err.println("Offset: not an integer");
+            System.exit(1);
+        }
     }
 
     /**

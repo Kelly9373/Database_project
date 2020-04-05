@@ -35,8 +35,8 @@ public class RandomInitialPlan {
     ArrayList<Condition> joinlist;        // List of join conditions
     ArrayList<Attribute> groupbylist;
     int numJoin;            // Number of joins in this query
-    //int limit;              // Number of rows to display
-    //int offset;             // Number of rows to skip
+    int limit;              // Number of rows to display
+    int offset;             // Number of rows to skip
     HashMap<String, Operator> tab_op_hash;  // Table name to the Operator
     Operator root;          // Root of the query plan tree
 
@@ -48,8 +48,8 @@ public class RandomInitialPlan {
         joinlist = sqlquery.getJoinList();
         groupbylist = sqlquery.getGroupByList();
         numJoin = joinlist.size();
-        //limit = sqlquery.getLimit();
-        //offset = sqlquery.getOffset();
+        limit = sqlquery.getLimit();
+        offset = sqlquery.getOffset();
     }
 
     /**
@@ -74,8 +74,8 @@ public class RandomInitialPlan {
         createGroupByOp();
         createDistinctOp();
 
-        //root.setLimit(limit);
-        //root.setOffset(offset);
+        root.setLimit(limit);
+        root.setOffset(offset);
         return root;
     }
 
@@ -175,6 +175,8 @@ public class RandomInitialPlan {
             int numJMeth = JoinType.numJoinTypes();
             int joinMeth = RandNumb.randInt(0, numJMeth - 1);
             jn.setJoinType(joinMeth);
+            //jn.setJoinType(1);
+            //jn.setJoinType(2);
             modifyHashtable(left, jn);
             modifyHashtable(right, jn);
             bitCList.set(jnnum);

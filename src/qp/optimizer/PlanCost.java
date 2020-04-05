@@ -161,9 +161,6 @@ public class PlanCost {
             rightjoinAttr = rightschema.getAttribute(rightattrind);
 
             /** Number of distinct values of left and right join attribute **/
-            for(Attribute attr: ht.keySet()) {
-                System.out.println("key: " + attr + " value: " + ht.get(attr));
-            }
             int leftattrdistn = ht.get(leftjoinAttr);
             int rightattrdistn = ht.get(rightjoinAttr);
             tuples /= (double) Math.max(leftattrdistn, rightattrdistn);
@@ -249,7 +246,6 @@ public class PlanCost {
             int oldvalue = ht.get(attri);
             int newvalue = (int) Math.ceil(1.0 * outtuples / intuples * oldvalue);
             ht.put(attri, outtuples);
-            System.out.println("new key: " + attri + " value: " + outtuples);
         }
         return outtuples;
     }

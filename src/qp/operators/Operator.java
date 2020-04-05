@@ -10,10 +10,21 @@ public class Operator {
 
     int optype;     // Whether it is OpType.SELECT/ Optype.PROJECT/OpType.JOIN
     Schema schema;  // Schema of the result at this operator
+    int limit;
+    int offset;
 
     public Operator(int type) {
         this.optype = type;
     }
+
+    public void setLimit(int limit) { this.limit = limit; }
+
+    public int getLimit() { return limit; }
+
+    public void setOffset(int offset) { this.offset = offset; }
+
+    public int getOffset() { return offset; }
+
 
     public Schema getSchema() {
         return schema;

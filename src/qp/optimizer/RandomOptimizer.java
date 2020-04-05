@@ -50,7 +50,7 @@ public abstract class RandomOptimizer {
     }
 
     /**
-     * Will be used in iterative improvement and simulated annealing classes
+     * To be more intuitive, this method is changed to abstract and will be used in SimulatedAnnealing classes
      *
      * @return optimal plan
      */
@@ -73,12 +73,16 @@ public abstract class RandomOptimizer {
                     nj.setLeft(left);
                     nj.setRight(right);
                     nj.setNumBuff(numbuff);
+                    nj.setLimit(node.getLimit());
+                    nj.setOffset(node.getOffset());
                     return nj;
                 case JoinType.BLOCKNESTED:
                     BlockNestedJoin bnj = new BlockNestedJoin((Join) node);
                     bnj.setLeft(left);
                     bnj.setRight(right);
                     bnj.setNumBuff(numbuff);
+                    bnj.setLimit(node.getLimit());
+                    bnj.setOffset(node.getOffset());
                     return bnj;
                 case JoinType.SORTMERGE:
                     SortMergeJoin smj = new SortMergeJoin((Join) node);
@@ -92,6 +96,8 @@ public abstract class RandomOptimizer {
                     smj.setRight(new ExternalSort(right, rightAttrs, numbuff));
 
                     smj.setNumBuff(numbuff);
+                    smj.setLimit(node.getLimit());
+                    smj.setOffset(node.getOffset());
                     return smj;
                 default:
                     return node;
@@ -143,106 +149,6 @@ public abstract class RandomOptimizer {
         }
         return neighbor;
     }
-
-    ///**
-     //* Implementation of Iterative Improvement Algorithm for Randomized optimization of Query Plan
-     //**/
-    /*
-    public Operator getOptimizedPlan() {
-        ///** get an initial plan for the given sql query **/
-    /*
-        RandomInitialPlan rip = new RandomInitialPlan(sqlquery);
-        numJoin = rip.getNumJoins();
-        long MINCOST = Long.MAX_VALUE;
-        Operator finalPlan = null;
-
-        ///** NUMITER is number of times random restart **/
-    /*
-        int NUMITER;
-        if (numJoin != 0) {
-            NUMITER = 2 * numJoin;
-        } else {
-            NUMITER = 1;
-        }
-
-        ///** Randomly restart the gradient descent until
-         //*  the maximum specified number of random restarts (NUMITER)
-         //*  has satisfied
-         //**/
-    /*
-        for (int j = 0; j < NUMITER; ++j) {
-            Operator initPlan = rip.prepareInitialPlan();
-            modifySchema(initPlan);
-            System.out.println("-----------initial Plan-------------");
-            Debug.PPrint(initPlan);
-            PlanCost pc = new PlanCost();
-            long initCost = pc.getCost(initPlan);
-            System.out.println(initCost);
-
-            boolean flag = true;
-            long minNeighborCost = initCost;   //just initialization purpose;
-            Operator minNeighbor = initPlan;  //just initialization purpose;
-            if (numJoin != 0) {
-                while (flag) {  // flag = false when local minimum is reached
-                    System.out.println("---------------while--------");
-                    Operator initPlanCopy = (Operator) initPlan.clone();
-                    minNeighbor = getNeighbor(initPlanCopy);
-
-                    System.out.println("--------------------------neighbor---------------");
-                    Debug.PPrint(minNeighbor);
-                    pc = new PlanCost();
-                    minNeighborCost = pc.getCost(minNeighbor);
-                    System.out.println("  " + minNeighborCost);
-
-                    ///** In this loop we consider from the
-                     //** possible neighbors (randomly selected)
-                     //** and take the minimum among for next step
-                     //**/
-    /*
-                    for (int i = 1; i < 2 * numJoin; ++i) {
-                        initPlanCopy = (Operator) initPlan.clone();
-                        Operator neighbor = getNeighbor(initPlanCopy);
-                        System.out.println("------------------neighbor--------------");
-                        Debug.PPrint(neighbor);
-                        pc = new PlanCost();
-                        long neighborCost = 0;
-                        try {
-                            neighborCost = pc.getCost(neighbor);
-                        } catch (Exception e) {
-                            System.out.println("fatal error.");
-                            System.exit(0);
-                        }
-                        System.out.println(neighborCost);
-
-                        if (neighborCost < minNeighborCost) {
-                            minNeighbor = neighbor;
-                            minNeighborCost = neighborCost;
-                        }
-                    }
-                    if (minNeighborCost < initCost) {
-                        initPlan = minNeighbor;
-                        initCost = minNeighborCost;
-                    } else {
-                        minNeighbor = initPlan;
-                        minNeighborCost = initCost;
-                        flag = false;  // local minimum reached
-                    }
-                }
-                System.out.println("------------------local minimum--------------");
-                Debug.PPrint(minNeighbor);
-                System.out.println(" " + minNeighborCost);
-            }
-            if (minNeighborCost < MINCOST) {
-                MINCOST = minNeighborCost;
-                finalPlan = minNeighbor;
-            }
-        }
-        System.out.println("\n\n\n");
-        System.out.println("---------------------------Final Plan----------------");
-        Debug.PPrint(finalPlan);
-        System.out.println("  " + MINCOST);
-        return finalPlan;
-    }*/
 
     /**
      * Selects a random method choice for join wiht number joinNum
@@ -427,7 +333,7 @@ public abstract class RandomOptimizer {
     }
 
     /**
-     * Modifies the schema of operators which are modified due to selecing an alternative neighbor plan
+     * Modifies the schema of operators which are modified due to selecting an alternative neighbor plan
      **/
     static void modifySchema(Operator node) {
         if (node.getOpType() == OpType.JOIN) {

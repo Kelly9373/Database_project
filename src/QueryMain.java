@@ -5,7 +5,6 @@
 import qp.operators.Debug;
 import qp.operators.Operator;
 import qp.optimizer.BufferManager;
-import qp.optimizer.IterativeImprovement;
 import qp.optimizer.PlanCost;
 import qp.optimizer.RandomInitialPlan;
 import qp.optimizer.RandomOptimizer;
@@ -119,18 +118,18 @@ public class QueryMain {
     public static Operator getQueryPlan(SQLQuery sqlquery) {
         Operator root = null;
 
+        /*
         RandomInitialPlan rip = new RandomInitialPlan(sqlquery);
         Operator planroot = rip.prepareInitialPlan();
         PlanCost pc = new PlanCost();
         int initCost = pc.getCost(planroot);
         Debug.PPrint(planroot);
         System.out.print("   "+initCost);
-        System.out.println();
-        /*
-        RandomOptimizer iiOptimizer = new IterativeImprovement(sqlquery);
-        Operator planroot = iiOptimizer.getOptimizedPlan();
-        RandomOptimizer saOptimizer = new SimulatedAnnealing(sqlquery, planroot);
-        planroot = saOptimizer.getOptimizedPlan();*/
+        System.out.println();*/
+
+
+        RandomOptimizer SAOptimizer = new SimulatedAnnealing(sqlquery);
+        Operator planroot = SAOptimizer.getOptimizedPlan();
 
         if (planroot == null) {
             System.out.println("DPOptimizer: query plan is null");
@@ -187,11 +186,33 @@ public class QueryMain {
         numAtts = schema.getNumCols();
         printSchema(schema);
 
+        int limit = root.getLimit();
+        int offset = root.getOffset();
+        boolean withLimit = false;
+        boolean endPrinting = false;
+        if (limit >= 0) {
+            withLimit = true;
+        }
+
         /** Print each tuple in the result **/
         Batch resultbatch;
         while ((resultbatch = root.next()) != null) {
             for (int i = 0; i < resultbatch.size(); ++i) {
+                if (offset > 0) {
+                    offset--;
+                    continue;
+                }
                 printTuple(resultbatch.get(i));
+                if (withLimit && limit > 0) {
+                    limit--;
+                    if (limit == 0) {
+                        endPrinting = true;
+                        break;
+                    }
+                }
+            }
+            if (endPrinting) {
+                break;
             }
         }
         root.close();
