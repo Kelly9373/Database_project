@@ -29,6 +29,10 @@ Windows : execute _build.bat_ file
 After compilation, all the compiled classes are inside the directory `classes`. Move all the table definition _< tablename >.det_ to `classes`. Enter `classes` directory and execute the following commands:
 
 ``
+cd classes
+``
+
+``
 java RandomDB <tablename> <# of records>
 ``
 
