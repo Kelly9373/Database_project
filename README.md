@@ -13,70 +13,27 @@ Based on the given project template, our group has implemented the following fea
 8. Randomized optimizer
 
 
-### 2. Environment Setup
+### 2. Environment Setup and Compilation
+Java 9 is used in this project
 
-1. Create a folder named _classes_ under the root folder which serves as the output directory for the project.
-
-2. In project root folder, create a system variable COMPONENT pointing to the root directory:
-
-    Linux / Mac : execute command 
- ``
- source queryenv
- ``
- 
-    Windows : follow the [guide](http://www.comp.nus.edu.sg/~tankl/cs3223/project/cs3223-proj-setup.htm)
-
-    Eclipse (other IDEs such as IntelliJ are similar) : follow the [guide](http://www.comp.nus.edu.sg/~tankl/cs3223/project/cs3223-proj-setup.htm)
-
- 
-### 3. Compilation
-
-Windows : execute _build.bat_ file
-
-Linux / Mac : execute _build.sh_ file via 
+Mac OS : execute _build.sh_ file via 
 ``
 ./build.sh
 ``
+Windows : execute _build.bat_ file
 
-### 4. Testing Procedure
 
-Guide is taken from [official instruction](http://www.comp.nus.edu.sg/~tankl/cs3223/project/user.htm).
+### 3. Testing 
+
+After compilation, all the compiled classes are inside the directory `classes`. Move all the table definition _< tablename >.det_ to `classes`. Enter `classes` directory.
 
 
 #### 4.1 Create test cases:
 
 Enter _testcases_ directory.
 
-Write Table Schema in customized file:  _< tablename >.det_
 
-Format for schema:
-~~~~
-<# of columns>
-<size of tuple>
-<attribute name> <data type> <range> <key type> <column size>
-~~~~
 
-Explanation:
-
-data type: 
-
-- either INTEGER / STRING / REAL
-
-range:
-    
-- For integers, and real, it considers the values between 0 and the range specified. 
-- For primary keys, provide range value greater than or equal to number of records.
-- For strings, just specify number of characters you string need to contain.           
-
-Key type:
-
-- May be PK/FK/NK respectively for primary key, foreign key, not a key.  
-- Use only integer data type for primary key.
- 
-Attribute size:
-
-- It is number of bytes required for the attribute. 
-- In java, integer is 4 bytes, character is 2 bytes.
 
 After creating the schema, use _RandomDB_ class to generate serialized schema file _< tablename >.md_ and the data file in text format _< tablename >.txt_ via command:
 
