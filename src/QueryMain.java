@@ -148,21 +148,17 @@ public class QueryMain {
         System.out.println("----------------------Execution Plan----------------");
         Debug.PPrint(root);
         System.out.println();
-        //PlanCost pc = new PlanCost();
-        //System.out.prpintf("\nExpected cost: %d\n", pc.getCost(root));
-        //if (args.length < 5) {
-            /** Ask user whether to continue execution of the program **/
-            System.out.println("enter 1 to continue, 0 to abort ");
-            try {
-                String temp = in.readLine();
-                int flag = Integer.parseInt(temp);
-                if (flag == 0) {
-                    System.exit(1);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        /** Ask user whether to continue execution of the program **/
+        System.out.println("enter 1 to continue, 0 to abort ");
+        try {
+            String temp = in.readLine();
+            int flag = Integer.parseInt(temp);
+            if (flag == 0) {
+                System.exit(1);
             }
-        //}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

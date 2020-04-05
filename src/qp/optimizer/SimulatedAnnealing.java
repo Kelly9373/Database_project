@@ -5,8 +5,11 @@ import qp.utils.RandNumb;
 import qp.utils.SQLQuery;
 
 public class SimulatedAnnealing extends RandomOptimizer {
+    // When current temperature is lower than END_TEMPERATURE, minCost should be reached
     private static final double END_TEMPERATURE = 1;
-    private static final double ALPHA = 0.8;
+    // To decrement the temperature each time
+    private static final double ALPHA = 0.85;
+    // The parameter used to get initial temperature
     private final double INIT_TEMP_PARAM = 2;
 
     /**
@@ -25,6 +28,7 @@ public class SimulatedAnnealing extends RandomOptimizer {
      */
     @Override
     public Operator getOptimizedPlan() {
+        /** get an initial plan for the given sql query **/
         RandomInitialPlan rip = new RandomInitialPlan(sqlquery);
         numJoin = rip.getNumJoins();
 
@@ -39,6 +43,7 @@ public class SimulatedAnnealing extends RandomOptimizer {
         if (numJoin !=0) {
             NUMITER = 2 * numJoin;
         } else {
+            // Exit if there is no join in the query
             printPlanCost("Final Plan", minPlan);
             return minPlan;
         }
@@ -49,6 +54,7 @@ public class SimulatedAnnealing extends RandomOptimizer {
          * has satisfied
          */
         for (int j = 0; j < NUMITER; ++j) {
+            // Prepare a random initial plan for more randomness each loop, except the first round
             if (j != 0) {
                 initPlan = rip.prepareInitialPlan();
                 RandomOptimizer.modifySchema(initPlan);
@@ -56,18 +62,21 @@ public class SimulatedAnnealing extends RandomOptimizer {
                 minCost = printPlanCost("Initial Plan", minPlan);
             }
 
+            // Loop until the current temperature is lower than END_TEMPERATURE
             for (double temperature = minCost * INIT_TEMP_PARAM; temperature > END_TEMPERATURE; temperature *= ALPHA) {
                 initPlan = minPlan;
                 initCost = minCost;
 
-                for (int i = 0; i < 12 * numJoin; i++) {
+                // Break if reach equilibrium
+                // We set equilibrium equals to 10 * numJoin here
+                for (int i = 0; i < 10 * numJoin; i++) {
                     Operator initPlanCopy = (Operator) initPlan.clone();
-                    Operator currentPlan = getNeighbor(initPlanCopy);
-                    int currentCost = printPlanCost("Neighbor", currentPlan);
+                    Operator neighborPlan = getNeighbor(initPlanCopy);
+                    int neighborCost = printPlanCost("Neighbor", neighborPlan);
 
-                    if (currentCost <= initCost || ifAccept(temperature, currentCost, initCost)) {
-                        initPlan = currentPlan;
-                        initCost = currentCost;
+                    if (neighborCost <= initCost || ifAccept(temperature, neighborCost, initCost)) {
+                        initPlan = neighborPlan;
+                        initCost = neighborCost;
                     }
                 }
 
@@ -87,14 +96,14 @@ public class SimulatedAnnealing extends RandomOptimizer {
      * Whether accept this uphill move
      *
      * @param temperature current annealing temperature
-     * @param currentCost current cost
+     * @param neighborCost current cost
      * @param initCost initial cost
      * @return return true if this move is accepted
      */
-    private boolean ifAccept(double temperature, int currentCost, int initCost) {
-        int delta = Math.abs(currentCost - initCost);
-        double prob = Math.exp(-delta / temperature);
-        return RandNumb.randDouble() < prob;
+    private boolean ifAccept(double temperature, int neighborCost, int initCost) {
+        int delta = Math.abs(neighborCost - initCost);
+        double probability = Math.exp(-delta / temperature);
+        return RandNumb.randDouble() < probability;
     }
 
 }

@@ -55,24 +55,14 @@ public class PlanCost {
      * Returns the cost of the plan
      **/
     public int getCost(Operator root) {
-        //cost = 0;
         isFeasible = true;
         numtuple = calculateCost(root);
         if (isFeasible) {
             return cost;
         } else {
-            //System.out.println("notFeasible");
             return Integer.MAX_VALUE;
         }
     }
-
-    /**
-     * Get number of tuples in estimated results
-     **/
-    public long getNumTuples() {
-        return numtuple;
-    }
-
 
     /**
      * Returns number of tuples in the root
@@ -91,8 +81,6 @@ public class PlanCost {
         } else if (node.getOpType() == OpType.GROUPBY) {
             return getStatistics((GroupBy) node);
         }
-        //System.out.println("operator is not supported");
-        //isFeasible = false;
         return -1;
     }
 
@@ -213,7 +201,6 @@ public class PlanCost {
     protected int getStatistics(Select node) {
         int intuples = calculateCost(node.getBase());
         if (!isFeasible) {
-            //System.out.println("notFeasible");
             return Integer.MAX_VALUE;
         }
 
@@ -321,13 +308,15 @@ public class PlanCost {
         return numtuples;
     }
 
+    /**
+     * Calculate the number of distinct tuples
+     * @param base
+     * @return the number of distinct tuples
+     */
     private int calculate(Operator base) {
-        // Calculates the input statistics.
         int inTupleNum = calculateCost(base);
         int inCapacity = Batch.getPageSize() / base.getSchema().getTupleSize();
         int inPageNum = (int) Math.ceil(1.0 * inTupleNum / inCapacity);
-
-        // Calculates the external sort cost.
         int bufferNum = BufferManager.getBuffersPerJoin();
         int numOfSortedRuns = (int) Math.ceil(1.0 * inPageNum / bufferNum);
         int numOfPasses = (int) Math.ceil(Math.log(numOfSortedRuns) / Math.log(bufferNum - 1)) + 1;
